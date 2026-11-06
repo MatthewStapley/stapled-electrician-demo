@@ -23,6 +23,9 @@ const { title, description, sheet, header = "sheath", preload = [] } = Astro.pro
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {/* Inline on purpose. In an external stylesheet this rule can arrive after
+        Chromium checks the opt-in, which cancels the page transition. */}
+    <style is:inline>@view-transition { navigation: auto; }</style>
     <title>{title} | {brand.fullName} concept by Stapled.</title>
     <meta name="description" content={description} />
     <meta name="robots" content="noindex" />
@@ -31,13 +34,6 @@ const { title, description, sheet, header = "sheath", preload = [] } = Astro.pro
     {preload.map((p) => <link rel="preload" as="image" href={p.href} media={p.media} />)}
     <script is:inline>
       document.documentElement.classList.add("js");
-      // A page transition interrupted by a quick navigation isn't an error.
-      ["pageswap", "pagereveal"].forEach(function (type) {
-        addEventListener(type, function (e) {
-          var t = e.viewTransition;
-          if (t) { t.ready.catch(function () {}); t.finished.catch(function () {}); t.updateCallbackDone && t.updateCallbackDone.catch(function () {}); }
-        });
-      });
     </script>
   </head>
   <body>

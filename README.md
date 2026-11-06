@@ -13,6 +13,12 @@ contact actions open an explanation instead of dialling or composing.
 
 Requires Node 22.12 or newer.
 
+Astro is pinned to the 7.3 line with `~7.3.8`. Astro 7.4 raises its Node minimum,
+so only widen that range once your Node version meets the new requirement.
+Installing on Node below 22.19 prints an `EBADENGINE` warning for `undici`. It
+belongs to Astro's Fonts feature, which this site doesn't use, and the build
+doesn't load it.
+
 ```sh
 npm install
 npm run dev       # http://localhost:4321/
@@ -58,7 +64,9 @@ they follow the base. Publishing is a separate step: nothing here deploys.
 - **Wall stages** (`src/components/BehindPlaster.astro`). A scale elevation that
   follows the step being read, using IntersectionObserver.
 - **Menu** (`src/components/Board.astro`). A consumer unit in a native `<dialog>`.
-- **Page transitions**: cross-document View Transitions, where supported.
+- **Page transitions**: cross-document View Transitions, where supported. The
+  `@view-transition` rule stays inline in `Layout.astro`. In an external
+  stylesheet it can load too late, and Chromium then cancels the transition.
 - **Service rows** (`src/components/Schedule.astro`). Accordion rows that link
   to the quote form with the service selected (`/quote/?service=<slug>`).
 - **Reduced motion**: the opening, scroll scene, wipe and line drawing are

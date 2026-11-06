@@ -37,10 +37,6 @@
   color-scheme: light;
 }
 
-@view-transition {
-  navigation: auto;
-}
-
 *, *::before, *::after { box-sizing: border-box; }
 
 html {
