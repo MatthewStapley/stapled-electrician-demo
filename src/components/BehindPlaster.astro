@@ -1,0 +1,135 @@
+---
+// One wall, four stages. The drawing follows whichever step is being read, and
+// it does not depend on any scroll animation. Drawn to scale: 267 px per metre.
+const steps = [
+  { title: "Drawn", body: "Every point goes on the plan first. Cables can only run in set zones: straight up, down or across from an accessory, or close to a corner. Anyone drilling that wall later has to be able to predict them." },
+  { title: "First fix", body: "Cables go in, back boxes are set level, and every route is photographed before it disappears." },
+  { title: "Plastered", body: "This is what you'll never see again. It's why the plan matters, and why we keep the photographs." },
+  { title: "Second fix and test", body: "Accessories go on, circuits come up one at a time, and each is tested before the certificate is written." },
+];
+---
+<section class="band plaster" data-stages aria-labelledby="plaster-title">
+  <span data-line-node="right" class="node"></span>
+  <div class="wrap plaster__grid">
+    <div class="plaster__stick">
+      <div class="wall" data-wall data-stage="4" role="img" aria-label="Elevation of one wall showing a socket, a switch, and the cable zones that serve them.">
+        <svg viewBox="0 0 640 680" aria-hidden="true">
+          <defs>
+            <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(90)">
+              <rect width="8" height="8" fill="#2a5f9f" fill-opacity="0.09" />
+              <path d="M0 0v8" stroke="#2a5f9f" stroke-opacity="0.3" stroke-width="1" />
+            </pattern>
+            <radialGradient id="glow" cx="0.5" cy="0" r="1"><stop offset="0" stop-color="#ffd2a0" stop-opacity="0.95" /><stop offset="1" stop-color="#ffd2a0" stop-opacity="0" /></radialGradient>
+          </defs>
+          <rect class="w-block" x="30" y="30" width="580" height="640" />
+          <g class="w-courses">
+            {Array.from({ length: 11 }, (_, i) => <path d={`M30 ${88 + i * 58}H610`} />)}
+            {Array.from({ length: 12 }, (_, r) => Array.from({ length: 6 }, (_, c) => <path d={`M${60 + c * 116 + (r % 2 ? 58 : 0)} ${30 + r * 58}v58`} />))}
+          </g>
+          <g class="w-zones">
+            <rect x="30" y="30" width="580" height="40" fill="url(#hatch)" />
+            <rect x="30" y="30" width="40" height="640" fill="url(#hatch)" />
+            <rect x="570" y="30" width="40" height="640" fill="url(#hatch)" />
+            <rect x="30" y="630" width="580" height="40" fill="url(#hatch)" />
+            <rect x="218" y="30" width="24" height="640" fill="url(#hatch)" />
+            <rect x="478" y="30" width="24" height="640" fill="url(#hatch)" />
+            <rect x="30" y="514" width="580" height="24" fill="url(#hatch)" />
+          </g>
+          <g class="w-cables" fill="none" stroke-width="3">
+            <path class="c-l" d="M226 30V520" /><path class="c-n" d="M230 30V520" /><path class="c-e" d="M234 30V520" /><path class="c-y" d="M234 30V520" />
+            <path class="c-l" d="M486 30V336" /><path class="c-n" d="M490 30V336" /><path class="c-e" d="M494 30V336" /><path class="c-y" d="M494 30V336" />
+          </g>
+          <g class="w-boxes">
+            <rect x="200" y="513" width="60" height="26" /><rect x="478" y="336" width="24" height="26" />
+            <text x="266" y="506">Socket, 450 mm</text>
+            <text x="508" y="330">Switch, 1200 mm</text>
+          </g>
+          <rect class="w-skim" x="30" y="30" width="580" height="640" />
+          <g class="w-finish">
+            <rect class="w-paint" x="30" y="30" width="580" height="640" />
+            <path class="w-glow" d="M120 30H620V640H120Z" fill="url(#glow)" />
+            <rect class="plate" x="191" y="512" width="78" height="28" rx="1.5" />
+            <rect class="plate" x="478" y="336" width="24" height="24" rx="1.5" />
+            <g class="plate-sw"><rect x="484" y="341" width="12" height="14" rx="1" /></g>
+            <g class="plate-sw"><rect x="203" y="519" width="13" height="14" rx="1" /><rect x="244" y="519" width="13" height="14" rx="1" /></g>
+          </g>
+          <rect class="w-frame" x="30" y="30" width="580" height="640" />
+          <path class="w-dim" d="M14 30V670M9 30h10M9 670h10" />
+          <text class="w-dim-t" transform="translate(10 370) rotate(-90)">2400 mm</text>
+        </svg>
+      </div>
+    </div>
+    <div class="plaster__copy">
+      <h2 id="plaster-title" class="title">Drawn first, so nothing about it is a mystery.</h2>
+      <ol class="stage-list">
+        {steps.map((s, i) => (
+          <li class:list={["stage"]} data-stage-step={i + 1}>
+            <span class="tag">Stage {i + 1} of {steps.length}</span>
+            <h3 class="subtitle">{s.title}</h3>
+            <p>{s.body}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .plaster { background: var(--plate); }
+  .node { position: absolute; top: 0; }
+  .plaster__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr); gap: clamp(2.5rem, 7vw, 7rem); }
+  .plaster__stick { position: sticky; top: calc(var(--header-h) + 1rem); align-self: start; }
+  .wall svg { width: 100%; height: auto; max-height: calc(100vh - var(--header-h) - 2rem); margin-inline: auto; }
+  .wall text { font-family: var(--font); font-size: 15px; font-variation-settings: "wdth" 84; fill: var(--ink); }
+  .w-block { fill: #dcdcd6; }
+  .w-courses path { stroke: #0000001c; stroke-width: 1; }
+  .w-frame { fill: none; stroke: var(--ink); stroke-width: 2; }
+  .w-dim { stroke: var(--ink-soft); fill: none; }
+  .wall text.w-dim-t { fill: var(--ink-soft); text-anchor: middle; }
+  .w-boxes rect { fill: #e7c55a; stroke: #8c7420; }
+  .c-l { stroke: var(--live); } .c-n { stroke: var(--neutral); } .c-e { stroke: var(--earth); } .c-y { stroke: var(--earth-y); stroke-dasharray: 7 7; }
+  .w-skim { fill: var(--skim); }
+  .w-paint { fill: #eeeae3; }
+  .plate { fill: #fff; stroke: #0004; }
+  .plate-sw rect { fill: #e5e5e0; stroke: #0003; }
+  .w-glow { opacity: 0.5; }
+  .w-zones, .w-cables, .w-boxes, .w-skim, .w-finish { transition: opacity 420ms ease; }
+  [data-stage="1"] .w-cables, [data-stage="1"] .w-boxes { opacity: 0; }
+  [data-stage="1"] .w-skim, [data-stage="2"] .w-skim { opacity: 0; }
+  [data-stage="1"] .w-finish, [data-stage="2"] .w-finish, [data-stage="3"] .w-finish { opacity: 0; }
+  .w-cables path { stroke-dashoffset: 0; }
+
+  .stage-list { margin-top: clamp(1.5rem, 4vw, 3rem); display: grid; gap: clamp(3rem, 22vh, 13rem); padding-bottom: clamp(2rem, 16vh, 9rem); }
+  .stage { display: grid; gap: 0.45rem; transition: color 300ms ease; }
+  /* Inactive steps stay readable: a softer colour, never reduced opacity. */
+  :global(html.js) .stage:not(.is-on) { color: var(--ink-soft); }
+  @media (max-width: 860px) {
+    .plaster__grid { grid-template-columns: 1fr; gap: 1.5rem; }
+    .plaster__stick { top: calc(var(--header-h)); z-index: 3; background: var(--plate); padding-block: 0.5rem; margin-inline: calc(var(--gutter) * -0.4); }
+    .wall svg { max-height: 40svh; }
+    .plaster__copy { order: -1; display: contents; }
+    .plaster__copy .title { order: -1; }
+    .stage-list { gap: 42svh; padding-bottom: 20svh; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(html.js) .stage:not(.is-on) { color: inherit; }
+    .stage-list { gap: 2.5rem; padding-bottom: 0; }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-stages]").forEach((root) => {
+    const wall = root.querySelector<HTMLElement>("[data-wall]")!;
+    const steps = [...root.querySelectorAll<HTMLElement>("[data-stage-step]")];
+    const pick = (el: HTMLElement) => {
+      wall.dataset.stage = el.dataset.stageStep!;
+      steps.forEach((s) => s.classList.toggle("is-on", s === el));
+    };
+    pick(steps[0]);
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => { if (e.isIntersecting) pick(e.target as HTMLElement); }),
+      { rootMargin: matchMedia("(max-width: 860px)").matches ? "-62% 0px -30% 0px" : "-45% 0px -45% 0px" },
+    );
+    steps.forEach((s) => io.observe(s));
+  });
+</script>

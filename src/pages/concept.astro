@@ -1,0 +1,73 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageHead from "../components/PageHead.astro";
+import { brand, stapled } from "../data/site";
+import { images } from "../data/images";
+const photos = Object.values(images);
+---
+<Layout title="About this concept" description="What is real, what is demonstrative, and how this concept becomes a site for a real electrician." sheet="40">
+  <PageHead tag="For electricians looking at this site" title="This is a demonstration of what your website could be." lede={`${brand.fullName} doesn't exist. Stapled. designed it to show how an independent electrician's website can earn trust before the first phone call.`}>
+    <a class="btn" style="margin-top:1.5rem" href={stapled.enquiryUrl}><span class="btn__cores" aria-hidden="true"><i></i><i></i><i></i></span>Talk to Stapled.</a>
+  </PageHead>
+
+  <section class="band band--plate">
+    <span data-line-node="left" style="position:absolute;top:0"></span>
+    <div class="wrap cols">
+      <div>
+        <h2 class="subtitle">What works here</h2>
+        <ul class="list">
+          <li>Every page, link and service route</li>
+          <li>The quote form's steps, questions and validation</li>
+          <li>The live room, built from a separate render of each circuit</li>
+          <li>Keyboard use, touch, reduced motion and every screen size</li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="subtitle">What's demonstrative</h2>
+        <ul class="list">
+          <li>The business, its name, its area and its projects</li>
+          <li>The quote form, which doesn't send or store anything</li>
+          <li>The phone number and email, which come from reserved ranges</li>
+          <li>The registration panel, which is left empty on purpose</li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="subtitle">What changes for you</h2>
+        <ul class="list">
+          <li>Your name, identity, area and services</li>
+          <li>Your real jobs, photographs and customer words</li>
+          <li>Your scheme registration and insurance details</li>
+          <li>Form delivery to your phone or inbox</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <h2 class="title">Image credits</h2>
+      <p class="lede" style="margin-top:1rem">The room visualisations, the consumer unit, the test sheet and all drawings were made for this concept. Photographs are from Unsplash under the Unsplash License. They show other people's buildings and installations, not work by a real or fictional electrician, and don't imply endorsement. Some show non-UK or non-domestic equipment and would be replaced by real site photographs.</p>
+      <ul class="credits">
+        {photos.map((p) => <li><span>{p.alt}</span> <a class="link" href={p.creditUrl}>{p.credit}</a></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="band dusk">
+    <div class="wrap cta">
+      <span data-line-node="end" style="position:absolute;left:0;top:0"></span>
+      <h2 class="title">Want your work presented with this much care?</h2>
+      <a class="btn" href={stapled.enquiryUrl}><span class="btn__cores" aria-hidden="true"><i></i><i></i><i></i></span>Talk to Stapled.</a>
+    </div>
+  </section>
+</Layout>
+<style>
+  .cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1.5rem, 4vw, 3.5rem); }
+  .list { margin-top: 0.8rem; }
+  .list li { padding-block: 0.6rem; border-top: 1px solid var(--rule); }
+  .credits { margin-top: 1.5rem; }
+  .credits li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1.5rem; padding-block: 0.6rem; border-top: 1px solid var(--rule); }
+  .cta { display: grid; gap: 1.5rem; justify-items: start; }
+  @media (max-width: 860px) { .cols { grid-template-columns: 1fr; } }
+  @media (max-width: 560px) { .credits li { grid-template-columns: 1fr; gap: 0.1rem; } }
+</style>

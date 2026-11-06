@@ -1,0 +1,32 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import PageHead from "../../components/PageHead.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+import Enquire from "../../components/Enquire.astro";
+import { projects } from "../../data/projects";
+---
+<Layout title="Projects" description="Illustrative projects showing how real case studies would read." sheet="10">
+  <PageHead title="The work, and the reasoning behind it." lede="Each of these is illustrative: invented jobs, written to show how a real case study would read. Pictures are visualisations made for this concept or licensed photographs of other people's buildings." />
+  <section class="grid-sec">
+    <span data-line-node="left" style="position:absolute;top:0"></span>
+    <div class="wrap grid">
+      {projects.map((p, i) => (
+        <div class:list={["cell", `cell--${i}`]}>
+          <ProjectCard project={p} ratio={i === 0 ? "16 / 9" : i === 3 ? "4 / 5" : "3 / 2"} sizes={i === 0 ? "100vw" : "(max-width: 860px) 100vw, 50vw"} />
+        </div>
+      ))}
+    </div>
+  </section>
+  <div style="height:var(--section)"></div>
+  <Enquire />
+</Layout>
+<style>
+  .grid-sec { position: relative; }
+  .grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: clamp(3rem, 6vw, 5.5rem) clamp(1.25rem, 3vw, 3rem); }
+  .cell--0 { grid-column: 1 / -1; }
+  .cell--1 { grid-column: 1 / span 7; }
+  .cell--2 { grid-column: 8 / span 5; align-self: end; }
+  .cell--3 { grid-column: 1 / span 4; }
+  .cell--4 { grid-column: 5 / span 8; align-self: end; }
+  @media (max-width: 860px) { .grid > * { grid-column: 1 / -1; } }
+</style>

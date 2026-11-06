@@ -1,0 +1,93 @@
+---
+// The footer is a drawing title block. It also carries the concept notice.
+import Mark from "./Mark.astro";
+import { asset, brand, nav, stapled } from "../data/site";
+import { services } from "../data/services";
+const { sheet, title } = Astro.props;
+---
+<footer class="foot on-dusk">
+  <div class="foot__grid">
+    <div class="foot__brand">
+      <Mark size={40} />
+      <p class="subtitle">{brand.fullName}</p>
+      <p class="foot__line">{brand.strapline}</p>
+    </div>
+    <nav class="foot__col" aria-label="Services">
+      <p class="tag">Services</p>
+      <ul>{services.map((s) => <li><a href={asset(`/services/${s.slug}/`)}>{s.short}</a></li>)}</ul>
+    </nav>
+    <nav class="foot__col" aria-label="Site">
+      <p class="tag">Site</p>
+      <ul>
+        {nav.slice(1).map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+        <li><a href={asset("/quote/")}>Get a quote</a></li>
+        <li><a href={asset("/concept/")}>About this concept</a></li>
+      </ul>
+    </nav>
+    <div class="foot__col">
+      <p class="tag">Contact (example details)</p>
+      <ul>
+        <li><button type="button" data-demo-contact="phone">{brand.phone}</button></li>
+        <li><button type="button" data-demo-contact="email">{brand.email}</button></li>
+        <li class="foot__plain">{brand.area}</li>
+      </ul>
+    </div>
+  </div>
+  <dl class="block">
+    <div class="block__wide"><dt>Project</dt><dd>{brand.fullName}, website concept</dd></div>
+    <div class="block__wide"><dt>Sheet</dt><dd>{title}</dd></div>
+    <div><dt>Drawing no.</dt><dd>LW-{sheet}</dd></div>
+    <div><dt>Drawn by</dt><dd><a href={stapled.url}>Stapled.</a></dd></div>
+    <div><dt>Scale</dt><dd>Fits all screens</dd></div>
+    <div class="block__status"><dt>Status</dt><dd>Design concept. {brand.fullName} is fictional, and nothing here is an offer of electrical work.</dd></div>
+  </dl>
+</footer>
+
+<style>
+  .foot {
+    position: relative;
+    z-index: 2;
+    background: var(--dusk);
+    color: var(--on-dusk);
+    padding: clamp(3rem, 7vw, 5.5rem) var(--gutter) clamp(1.25rem, 3vw, 2rem);
+    --mark-l: var(--live-on-dusk); --mark-n: var(--neutral-on-dusk); --mark-e: var(--earth-on-dusk);
+  }
+  .foot__grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.4fr;
+    gap: clamp(2rem, 4vw, 4rem);
+    padding-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+  .foot__brand { display: grid; gap: 0.7rem; align-content: start; }
+  .foot__line { color: var(--on-dusk-soft); }
+  .foot__col ul { display: grid; gap: 0.1rem; margin-top: 0.5rem; }
+  .foot__col a, .foot__col button {
+    display: inline-flex; align-items: center; min-height: 2.25rem;
+    padding: 0; background: none; border: 0; color: inherit; cursor: pointer;
+    text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 0.2em;
+    transition: text-decoration-color 160ms ease;
+    overflow-wrap: anywhere;
+    text-align: left;
+  }
+  .foot__col a:hover, .foot__col button:hover { text-decoration-color: currentColor; }
+  .foot__plain { margin-top: 0.3rem; color: var(--on-dusk-soft); }
+  .block {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    margin: 0;
+    border: 1px solid var(--rule-dusk);
+  }
+  .block > div { padding: 0.65rem 0.8rem; border-right: 1px solid var(--rule-dusk); border-bottom: 1px solid var(--rule-dusk); min-width: 0; }
+  .block__wide { grid-column: span 3; }
+  .block__status { grid-column: span 3; }
+  .block dt { font-size: 0.8125rem; font-variation-settings: "wdth" 84; color: var(--on-dusk-soft); }
+  .block dd { margin: 0; font-size: 0.9375rem; font-variation-settings: "wdth" 92; line-height: 1.3; }
+  @media (max-width: 860px) {
+    .foot__grid { grid-template-columns: 1fr 1fr; }
+    .foot__brand { grid-column: 1 / -1; }
+    .foot__col:last-child { grid-column: 1 / -1; }
+    .block { grid-template-columns: repeat(3, 1fr); }
+    .block__wide, .block__status { grid-column: 1 / -1; }
+  }
+  @media (max-width: 440px) { .block > div:not(.block__wide):not(.block__status) { grid-column: span 1; padding-inline: 0.5rem; } }
+</style>

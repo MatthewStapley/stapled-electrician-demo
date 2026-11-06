@@ -1,0 +1,94 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Photo from "../../components/Photo.astro";
+import Enquire from "../../components/Enquire.astro";
+import DrawnCompare from "../../components/DrawnCompare.astro";
+import { asset } from "../../data/site";
+import { projects, type Project } from "../../data/projects";
+import { serviceBySlug } from "../../data/services";
+
+export function getStaticPaths() {
+  return projects.map((p) => ({ params: { slug: p.slug }, props: { project: p } }));
+}
+const { project } = Astro.props as { project: Project };
+const i = projects.indexOf(project);
+const next = projects[(i + 1) % projects.length];
+---
+<Layout title={project.title} description={project.summary} sheet={`1${i + 1}`} header="dusk">
+  <section class="pj dusk">
+    <span data-line-node="left" style="position:absolute;top:0"></span>
+    <div class="wrap pj__top">
+      <p class="tag"><a class="link" href={asset("/projects/")}>Projects</a>, illustrative project</p>
+      <h1 class="display">{project.title}</h1>
+      <p class="tag">{project.kind}, {project.place.toLowerCase()}</p>
+    </div>
+    <div class="wrap">
+      {project.drawnCompare
+        ? <DrawnCompare />
+        : <Photo image={project.image} eager sizes="100vw" ratio="16 / 9" energise={false} label="Illustrative project" />}
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap body">
+      <dl class="reg" aria-label="Project register">
+        {project.register.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+        <div>
+          <dt>Services</dt>
+          <dd>{project.services.map((s, n) => { const sv = serviceBySlug(s)!; return <>{n > 0 && ", "}<a class="link" href={asset(`/services/${s}/`)}>{sv.short}</a></>; })}</dd>
+        </div>
+      </dl>
+      <div class="story">
+        <h2 class="subtitle">The brief</h2>
+        <p class="lede">{project.brief}</p>
+        <h2 class="subtitle">The difficult part</h2>
+        <p>{project.problem}</p>
+        <h2 class="subtitle">What was done</h2>
+        <ol class="did">{project.approach.map((a) => <li>{a}</li>)}</ol>
+      </div>
+    </div>
+  </section>
+
+  {project.gallery.length > 0 && (
+    <section class="band band--plate">
+      <span data-line-node="right" style="position:absolute;top:0"></span>
+      <div class="wrap gal">
+        {project.gallery.map((g) => (
+          <div class="gal__item">
+            <Photo image={g.image} ratio="3 / 2" />
+            <p class="tag">{g.caption}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <section class="band">
+    <span data-line-node="left" style="position:absolute;top:0"></span>
+    <div class="wrap next">
+      <span class="tag">Next project</span>
+      <a class="title link" href={asset(`/projects/${next.slug}/`)}>{next.title}</a>
+    </div>
+  </section>
+  <Enquire title="Got a job like this?" />
+</Layout>
+
+<style>
+  .pj { position: relative; z-index: 2; padding-top: calc(var(--header-h) + clamp(2rem, 5vw, 4rem)); padding-bottom: clamp(2rem, 4vw, 3rem); }
+  .pj__top { display: grid; gap: 0.8rem; margin-bottom: clamp(1.75rem, 4vw, 3rem); }
+  .pj__top .display { font-size: clamp(2.3rem, 5.4vw, 5.25rem); max-width: 15em; }
+  .body { display: grid; grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr); gap: clamp(2rem, 6vw, 6rem); }
+  .reg { margin: 0; align-self: start; position: sticky; top: calc(var(--header-h) + 1.5rem); }
+  .reg > div { padding-block: 0.7rem; border-top: 1px solid var(--rule); }
+  .reg dt { font-size: 0.9375rem; font-variation-settings: "wdth" 84; color: var(--ink-soft); }
+  .reg dd { margin: 0; font-weight: 540; }
+  .story { display: grid; gap: 0.7rem; max-width: 38em; }
+  .story h2:not(:first-child) { margin-top: 1.75rem; }
+  .did { counter-reset: did; display: grid; gap: 0.1rem; }
+  .did li { counter-increment: did; display: grid; grid-template-columns: 2rem minmax(0, 1fr); padding-block: 0.6rem; border-top: 1px solid var(--rule); }
+  .did li::before { content: counter(did); font-weight: 620; color: var(--ink-soft); }
+  .gal { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: clamp(1.25rem, 3vw, 2.5rem); }
+  .gal__item { display: grid; gap: 0.6rem; }
+  .next { display: grid; gap: 0.3rem; }
+  @media (max-width: 860px) { .body { grid-template-columns: 1fr; } .reg { position: static; } }
+</style>

@@ -1,0 +1,48 @@
+---
+// Always visible and never dismissible, so the concept can't be mistaken for a
+// real business. The same bar appears on the Stapled. bathroom demo.
+import { asset, brand, stapled } from "../data/site";
+---
+<div class="bar">
+  <a href={stapled.url} class="bar__brand" aria-label="Stapled. website">Stapled.<span>Concept</span></a>
+  <p class="bar__note"><span class="bar__wide">{brand.fullName} is a fictional business. </span>Website design concept</p>
+  <a href={asset("/concept/")} class="bar__link">About this concept</a>
+</div>
+
+<style>
+  .bar {
+    position: relative;
+    z-index: 61;
+    height: var(--bar-h);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1rem;
+    padding-inline: clamp(1rem, 3vw, 2rem);
+    background: #111;
+    color: #f5f3ee;
+    font-size: 0.875rem;
+    font-variation-settings: "wdth" 90;
+    view-transition-name: demo-bar;
+  }
+  .bar__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .bar__brand span {
+    padding: 0.05rem 0.4rem;
+    border-radius: 2px;
+    background: #c8f560;
+    color: #1a2405;
+    font-size: 0.8125rem;
+    font-weight: 620;
+  }
+  .bar__note { text-align: center; color: #cfccc4; }
+  .bar__link { white-space: nowrap; text-underline-offset: 0.2em; }
+  .bar__link, .bar__brand { min-height: 2.5rem; display: inline-flex; align-items: center; }
+  @media (max-width: 760px) { .bar__wide { display: none; } }
+  @media (max-width: 560px) { .bar__note { display: none; } .bar { grid-template-columns: 1fr auto; } }
+</style>

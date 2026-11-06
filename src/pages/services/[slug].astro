@@ -1,0 +1,139 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Photo from "../../components/Photo.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+import Enquire from "../../components/Enquire.astro";
+import { asset } from "../../data/site";
+import { services, type Service } from "../../data/services";
+import { projectBySlug } from "../../data/projects";
+
+export function getStaticPaths() {
+  return services.map((s) => ({ params: { slug: s.slug }, props: { service: s } }));
+}
+const { service } = Astro.props as { service: Service };
+const project = service.project ? projectBySlug(service.project) : undefined;
+const i = services.indexOf(service);
+const next = services[(i + 1) % services.length];
+---
+<Layout title={service.title} description={service.intro} sheet={`0${service.way + 2}`} header="dusk">
+  <section class="sv dusk">
+    <span data-line-node="left" style="position:absolute;top:0"></span>
+    <div class="sv__media"><Photo image={service.image} eager sizes="100vw" energise={false} /></div>
+    <div class="wrap sv__text">
+      <p class="tag"><a class="link" href={asset("/services/")}>Services</a>, way {service.way}</p>
+      <h1 class="display">{service.title}</h1>
+      <p class="lede">{service.intro}</p>
+      <a class="btn" href={asset(`/quote/?service=${service.slug}`)}><span class="btn__cores" aria-hidden="true"><i></i><i></i><i></i></span>Get a quote for this</a>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap two">
+      <h2 class="title">What's included</h2>
+      <ul class="ticks">{service.includes.map((t) => <li>{t}</li>)}</ul>
+    </div>
+  </section>
+
+  <section class="band band--plate">
+    <span data-line-node="right" style="position:absolute;top:0"></span>
+    <div class="wrap">
+      <h2 class="title">How it usually runs</h2>
+      <ol class="run">
+        {service.stages.map((s, n) => (
+          <li><span class="run__n" aria-hidden="true">{n + 1}</span><h3 class="subtitle">{s.title}</h3><p>{s.body}</p></li>
+        ))}
+      </ol>
+      <p class="end-cert"><span class="tag">What you get at the end</span><span class="subtitle">{service.certificate}</span></p>
+    </div>
+  </section>
+
+  <section class="band">
+    <span data-line-node="left" style="position:absolute;top:0"></span>
+    <div class="wrap two">
+      <h2 class="title">Worth knowing</h2>
+      <div class="faq">
+        {service.knowing.map((k) => (
+          <details>
+            <summary>{k.q}<span class="faq__toggle" aria-hidden="true"></span></summary>
+            <p>{k.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {project && (
+    <section class="band dusk">
+      <div class="wrap rel">
+        <h2 class="title">An example of this work</h2>
+        <ProjectCard project={project} ratio="16 / 10" sizes="(max-width: 860px) 100vw, 60vw" />
+      </div>
+    </section>
+  )}
+
+  <section class="band">
+    <div class="wrap next">
+      <span class="tag">Next on the schedule</span>
+      <a class="subtitle link" href={asset(`/services/${next.slug}/`)}>{next.title}</a>
+    </div>
+  </section>
+  <Enquire service={service.slug} title="Tell us about the job." />
+</Layout>
+
+<style>
+  .sv {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    min-height: 100svh;
+  }
+  .sv__media { order: 2; position: relative; min-height: 22rem; }
+  .sv__media :global(figure) { position: absolute; inset: 0; }
+  .sv__media :global(figcaption) { left: auto; right: 0; z-index: 1; }
+  .sv__media::after { content: ""; position: absolute; inset: 0 0 auto; height: 11.5rem; background: linear-gradient(180deg, rgb(20 28 41 / 0.95) 0, rgb(20 28 41 / 0.88) 6.75rem, rgb(20 28 41 / 0) 100%); pointer-events: none; }
+  .sv__text {
+    align-self: end;
+    display: grid;
+    gap: 1.1rem;
+    justify-items: start;
+    padding: calc(var(--header-h) + var(--bar-h) + 2rem) clamp(1.5rem, 4vw, 4rem) clamp(2.5rem, 6vw, 4.5rem) var(--gutter);
+    margin: 0;
+    max-width: none;
+  }
+  .sv__text .display { font-size: clamp(2.4rem, 4.6vw, 4.9rem); overflow-wrap: break-word; }
+  @media (max-width: 900px) {
+    .sv { grid-template-columns: 1fr; min-height: 0; }
+    .sv__media { order: 0; aspect-ratio: 4 / 3; min-height: 0; margin-top: calc(var(--header-h) * 0); }
+    .sv__text { padding: 1.75rem var(--gutter) 2.5rem; }
+  }
+  .two { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(1.5rem, 6vw, 6rem); }
+  .ticks li { position: relative; padding: 0.9rem 0 0.9rem 2rem; border-top: 1px solid var(--rule); max-width: 38em; }
+  .ticks li::before {
+    content: ""; position: absolute; left: 0; top: 1.5rem; width: 1.15rem; height: 7px;
+    border-block: 1.5px solid var(--live);
+  }
+  .run { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(1rem, 2.5vw, 2.25rem); margin-top: clamp(1.75rem, 4vw, 3rem); }
+  .run li { display: grid; gap: 0.5rem; align-content: start; padding-top: 0.9rem; border-top: 2px solid var(--ink); }
+  .run__n { font-size: 1.05rem; font-weight: 600; color: var(--ink-soft); }
+  .end-cert { display: grid; gap: 0.2rem; margin-top: clamp(2rem, 4vw, 3rem); }
+  .faq details { border-top: 1px solid var(--rule); }
+  .faq details:last-child { border-bottom: 1px solid var(--rule); }
+  .faq summary {
+    display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+    min-height: 3.5rem; padding-block: 0.6rem;
+    font-weight: 580; font-size: 1.15rem; font-variation-settings: "wdth" 106;
+    cursor: pointer; list-style: none;
+  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq__toggle { flex: none; position: relative; width: 1rem; height: 1rem; }
+  .faq__toggle::before, .faq__toggle::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 2px; background: currentColor; transition: transform 200ms var(--ease); }
+  .faq__toggle::after { transform: rotate(90deg); }
+  details[open] .faq__toggle::after { transform: rotate(0); }
+  .faq p { padding-bottom: 1.1rem; max-width: 36em; }
+  .rel { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(1.5rem, 6vw, 6rem); }
+  .next { display: grid; gap: 0.2rem; }
+  @media (max-width: 960px) { .run { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 860px) { .two, .rel { grid-template-columns: 1fr; } }
+  @media (max-width: 520px) { .run { grid-template-columns: 1fr; } }
+</style>

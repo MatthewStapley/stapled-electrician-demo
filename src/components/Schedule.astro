@@ -1,0 +1,169 @@
+---
+// Services listed the way they're listed in the trade: a schedule of circuits.
+// Each row opens to show what's included and a route to the quote form, with
+// that service already selected. Without JavaScript, every row is open.
+import { asset } from "../data/site";
+import { services } from "../data/services";
+import { imageSrcset, imageUrl } from "../data/images";
+const { heading = "Electrical services", intro } = Astro.props;
+const uid = Math.random().toString(36).slice(2, 7);
+---
+<div class="sch" data-schedule>
+  <div class="sch__list">
+    <p class="tag sch__label">Schedule of circuits</p>
+    <h2 class="title">{heading}</h2>
+    {intro && <p class="lede sch__intro">{intro}</p>}
+    <ol class="sch__rows">
+      {services.map((s, i) => (
+        <li class:list={["row", { "is-open": i === 0 }]} data-row={i}>
+          <h3 class="row__h">
+            <button type="button" class="row__btn" id={`b-${uid}-${i}`} aria-expanded={i === 0 ? "true" : "false"} aria-controls={`p-${uid}-${i}`}>
+              <span class="row__way">Way {s.way}</span>
+              <span class="row__toggle" aria-hidden="true"><i></i></span>
+              <span class="row__text">
+                <span class="row__name">{s.title}</span>
+                <span class="row__covers">{s.covers}</span>
+              </span>
+              <span class="row__mark" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="row__panel" id={`p-${uid}-${i}`} role="region" aria-labelledby={`b-${uid}-${i}`}>
+            <div class="row__clip">
+              <div class="row__body">
+                <img class="row__img" src={imageUrl(s.image, 640)} alt="" loading="lazy" decoding="async" width={s.image.width} height={s.image.height} style={s.image.focus ? `object-position:${s.image.focus}` : undefined} />
+                <ul class="row__list">{s.includes.slice(0, 3).map((t) => <li>{t}</li>)}</ul>
+                <p class="row__cert"><span class="tag">You receive</span> {s.certificate}</p>
+                <div class="row__actions">
+                  <a class="btn" href={asset(`/quote/?service=${s.slug}`)}><span class="btn__cores" aria-hidden="true"><i></i><i></i><i></i></span>Get a quote<span class="visually-hidden"> for {s.title.toLowerCase()}</span></a>
+                  <a class="link row__more" href={asset(`/services/${s.slug}/`)}>What's involved<span class="visually-hidden"> in {s.title.toLowerCase()}</span></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+  <div class="sch__view" aria-hidden="true">
+    <div class="sch__frame">
+      {services.map((s, i) => (
+        <img class:list={[{ "is-on": i === 0 }]} data-view={i} src={imageUrl(s.image)} srcset={imageSrcset(s.image)} sizes="40vw" alt="" loading="lazy" decoding="async" style={s.image.focus ? `object-position:${s.image.focus}` : undefined} />
+      ))}
+      <span class="sch__tag">Illustrative image</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .sch { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 5.5rem); align-items: start; }
+  .sch__label { margin-bottom: 0.4rem; }
+  .sch__intro { margin-top: 1rem; }
+  .sch__rows { margin-top: clamp(1.75rem, 4vw, 3rem); border-top: 1px solid var(--rule); }
+  .row { border-bottom: 1px solid var(--rule); transition: background-color 180ms ease; }
+  .row.is-open { background: color-mix(in srgb, var(--plate) 55%, transparent); }
+  .row__h { font: inherit; }
+  .row__btn {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 3.4rem 1.35rem minmax(0, 1fr) 1.25rem;
+    gap: 0 0.95rem;
+    align-items: center;
+    padding: 0.9rem 0.75rem 0.9rem 0.6rem;
+    background: none;
+    border: 0;
+    text-align: left;
+    cursor: pointer;
+  }
+  .row__btn:focus-visible { outline-offset: -3px; }
+  .row__way { font-size: 0.9375rem; font-variation-settings: "wdth" 80; color: var(--ink-soft); }
+  .row__text { display: grid; gap: 0.15rem; min-width: 0; }
+  .row__name { font-size: clamp(1.2rem, 1.85vw, 1.6rem); font-weight: 560; font-variation-settings: "wdth" 110; letter-spacing: -0.015em; line-height: 1.15; }
+  .row__covers { font-variation-settings: "wdth" 92; color: var(--ink-soft); line-height: 1.35; }
+  .row__toggle {
+    position: relative;
+    width: 1.35rem;
+    height: 2.5rem;
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--ink) 14%, transparent);
+    box-shadow: inset 0 1px 2px #0003;
+  }
+  .row__toggle i {
+    position: absolute;
+    inset: 2px 2px auto;
+    height: calc(50% - 2px);
+    border-radius: 1px;
+    background: var(--ink-soft);
+    transform: translateY(100%);
+    transition: transform 150ms var(--ease), background-color 120ms;
+  }
+  .row.is-open .row__toggle i { transform: none; background: var(--live); }
+  .row__mark { position: relative; width: 1.25rem; height: 1.25rem; }
+  .row__mark::before, .row__mark::after { content: ""; position: absolute; left: 0; right: 0; top: calc(50% - 1px); height: 2px; background: currentColor; transition: transform 220ms var(--ease); }
+  .row__mark::after { transform: rotate(90deg); }
+  .row.is-open .row__mark::after { transform: rotate(0); }
+  @media (hover: hover) {
+    .row:not(.is-open):hover { background: color-mix(in srgb, var(--plate) 30%, transparent); }
+    .row:not(.is-open):hover .row__toggle i { background: var(--ink); }
+  }
+
+  .row__panel { display: grid; grid-template-rows: 1fr; transition: grid-template-rows 300ms var(--ease), visibility 300ms; }
+  .row__clip { overflow: hidden; min-height: 0; }
+  :global(html.js) .row:not(.is-open) .row__panel { grid-template-rows: 0fr; visibility: hidden; }
+  .row__body { display: grid; gap: 0.85rem; padding: 0.15rem 0.75rem 1.35rem calc(0.6rem + 3.4rem + 0.95rem + 1.35rem + 0.95rem); }
+  .row__img { display: none; width: 100%; aspect-ratio: 16 / 10; height: auto; object-fit: cover; background: var(--dusk-2); }
+  .row__list { display: grid; gap: 0.25rem; }
+  .row__list li { position: relative; padding-left: 1.5rem; max-width: 36em; }
+  .row__list li::before { content: ""; position: absolute; left: 0; top: 0.72em; width: 0.9rem; height: 5px; border-block: 1px solid var(--live); }
+  .row__cert { font-weight: 600; }
+  .row__cert .tag { display: block; font-weight: 500; }
+  .row__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1.25rem; }
+  .row__more { padding-block: 0.6rem; }
+
+  .sch__view { position: sticky; top: calc(var(--header-h) + 1.5rem); }
+  .sch__frame { position: relative; aspect-ratio: 4 / 5; max-height: calc(100vh - 8rem); width: 100%; overflow: hidden; background: var(--dusk-2); }
+  .sch__frame img {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    opacity: 0;
+    transition: opacity 320ms ease;
+  }
+  .sch__frame img.is-on { opacity: 1; }
+  .sch__tag { position: absolute; left: 0; bottom: 0; padding: 0.2rem 0.55rem; background: var(--dusk); color: var(--on-dusk); font-size: 0.8125rem; font-variation-settings: "wdth" 84; }
+
+  @media (max-width: 960px) {
+    .sch { grid-template-columns: 1fr; }
+    .sch__view { display: none; }
+    .row__btn { grid-template-columns: 1.35rem minmax(0, 1fr) 1.25rem; gap: 0 0.8rem; padding-inline: 0.5rem; }
+    .row__way { grid-column: 2; grid-row: 1; }
+    .row__toggle { grid-column: 1; grid-row: 1 / span 2; }
+    .row__text { grid-column: 2; grid-row: 2; }
+    .row__mark { grid-column: 3; grid-row: 1 / span 2; }
+    .row__body { padding: 0.25rem 0.5rem 1.25rem; }
+    .row__img { display: block; }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-schedule]").forEach((root) => {
+    const rows = [...root.querySelectorAll<HTMLElement>("[data-row]")];
+    const views = [...root.querySelectorAll<HTMLElement>("[data-view]")];
+    rows.forEach((row, i) => {
+      const btn = row.querySelector<HTMLButtonElement>(".row__btn")!;
+      btn.addEventListener("click", () => {
+        const opening = !row.classList.contains("is-open");
+        const top = btn.getBoundingClientRect().top;
+        rows.forEach((r) => {
+          r.classList.toggle("is-open", opening && r === row);
+          r.querySelector(".row__btn")!.setAttribute("aria-expanded", String(opening && r === row));
+        });
+        if (opening) views.forEach((v, n) => v.classList.toggle("is-on", n === i));
+        // The row above may be closing: hold this one still under the pointer.
+        const until = performance.now() + 340;
+        const hold = () => {
+          scrollBy({ top: btn.getBoundingClientRect().top - top, behavior: "instant" });
+          if (performance.now() < until) requestAnimationFrame(hold);
+        };
+        hold();
+      });
+    });
+  });
+</script>

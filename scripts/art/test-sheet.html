@@ -1,0 +1,35 @@
+<!doctype html>
+<!-- Specimen schedule of test results, 1400 x 1400 CSS px. Invented figures. -->
+<meta charset="utf-8">
+<style>
+@font-face{font-family:Ar;src:url(../../node_modules/@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2);font-weight:100 900;font-stretch:62% 125%}
+*{box-sizing:border-box;margin:0}
+html,body{width:1400px;height:1400px;overflow:hidden}
+body{font-family:Ar,sans-serif;background:radial-gradient(90% 70% at 42% 30%,#46515f 0,#2d3745 46%,#1a2230 100%);position:relative;color:#141c29}
+.sheet{position:absolute;left:135px;top:250px;width:1130px;height:900px;background:#f8f8f4;padding:58px 60px;box-shadow:0 40px 70px -24px #000b;font-stretch:88%}
+.spec{position:absolute;right:60px;top:58px;padding:6px 14px;border:2px solid #a3271b;color:#a3271b;font-weight:700;font-size:21px;border-radius:2px;transform:rotate(-2deg)}
+h1{font-size:43px;font-weight:620;font-stretch:112%;letter-spacing:-.025em}
+.sub{margin-top:8px;font-size:21px;color:#414b58}
+.meta{display:grid;grid-template-columns:repeat(3,1fr);margin:30px 0 26px;border:1.5px solid #141c29}
+.meta div{padding:9px 12px;font-size:20px;font-weight:600;border-right:1px solid #141c2966}
+.meta div:last-child{border:0}
+.meta small{display:block;font-size:15.5px;font-weight:450;color:#414b58}
+table{width:100%;border-collapse:collapse;font-size:21px;font-variant-numeric:tabular-nums}
+th{font-size:16px;font-weight:600;text-align:left;vertical-align:bottom;padding:7px 8px;border-bottom:2px solid #141c29;line-height:1.15}
+td{padding:10.5px 8px;border-bottom:1px solid #141c2933}
+td:nth-child(n+3),th:nth-child(n+3){text-align:right}
+td:first-child{font-weight:650;width:48px}
+td:last-child{color:#2f6f3a;font-weight:650}
+.foot{position:absolute;left:60px;right:60px;bottom:46px;display:flex;justify-content:space-between;font-size:18px;color:#414b58;border-top:1.5px solid #141c29;padding-top:12px}
+</style>
+<body><div class="sheet">
+<div class="spec">Specimen</div>
+<h1>Schedule of test results</h1><p class="sub">Example only. Every figure on this sheet is invented.</p>
+<div class="meta"><div><small>Earthing</small>TN-C-S</div><div><small>Ze</small>0.21 Ω</div><div><small>Prospective fault current</small>1.8 kA</div></div>
+<table><thead><tr><th>Way</th><th>Circuit</th><th>Device</th><th>R1+R2 (Ω)</th><th>Insulation (MΩ)</th><th>Zs (Ω)</th><th>RCD (ms)</th><th>Result</th></tr></thead>
+<tbody id="b"></tbody></table>
+<div class="foot"><span>Linework Electrical is a fictional business</span><span>Not a real certificate</span></div></div>
+<script>
+const r=[["Lights upstairs","B6",".84",">200","1.05","18"],["Lights downstairs","B6",".72",">200",".93","21"],["Smoke and heat alarms","B6",".61",">200",".82","17"],["Ring upstairs","B32",".38",">200",".59","19"],["Ring downstairs","B32",".35",">200",".56","22"],["Kitchen ring","B32",".31",">200",".52","20"],["Cooker","B32",".24",">200",".45","16"],["Shower","B40",".19",">200",".40","18"],["Boiler","B6",".57",">200",".78","23"],["EV charge point","B32",".29",">200",".50","19"]];
+document.getElementById('b').innerHTML=r.map((x,i)=>`<tr><td>${i+1}</td><td>${x[0]}</td><td>${x[1]}</td><td>${x[2].replace(/^\./,'0.')}</td><td>${x[3]}</td><td>${x[4].replace(/^\./,'0.')}</td><td>${x[5]}</td><td>Pass</td></tr>`).join('');
+</script>

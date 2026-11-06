@@ -1,0 +1,44 @@
+---
+// One image, with the label the concept requires and an optional energise hook.
+import { imageSrcset, imageUrl, type SiteImage } from "../data/images";
+interface Props {
+  image: SiteImage;
+  sizes?: string;
+  ratio?: string;
+  class?: string;
+  eager?: boolean;
+  energise?: boolean;
+  label?: string | false;
+}
+const { image, sizes = "(max-width: 860px) 100vw, 50vw", ratio, class: cls, eager = false, energise = true, label } = Astro.props;
+const tag = label === false ? null : label ?? (image.source === "render" ? "Illustrative visualisation" : "Illustrative image");
+---
+<figure class:list={["ph", cls]} data-energise={energise ? "" : undefined} style={ratio ? `--ratio:${ratio}` : undefined}>
+  <img
+    src={imageUrl(image)}
+    srcset={imageSrcset(image)}
+    sizes={sizes}
+    alt={image.alt}
+    width={image.width}
+    height={image.height}
+    loading={eager ? "eager" : "lazy"}
+    decoding="async"
+    style={image.focus ? `object-position:${image.focus}` : undefined}
+  />
+  {tag && <figcaption class="ph__tag">{tag}</figcaption>}
+</figure>
+
+<style>
+  .ph { position: relative; aspect-ratio: var(--ratio, auto); overflow: hidden; background: var(--dusk-2); }
+  .ph img { width: 100%; height: 100%; object-fit: cover; }
+  .ph__tag {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    padding: 0.2rem 0.55rem;
+    background: var(--dusk);
+    color: var(--on-dusk);
+    font-size: 0.8125rem;
+    font-variation-settings: "wdth" 84;
+  }
+</style>

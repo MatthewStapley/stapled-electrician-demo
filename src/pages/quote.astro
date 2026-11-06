@@ -1,0 +1,449 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { asset, brand, stapled } from "../data/site";
+import { services } from "../data/services";
+import { process } from "../data/process";
+
+const steps = ["The job", "The property", "The detail", "Your details"];
+const timing = ["As soon as possible", "Within a month", "In the next few months", "Just planning for now"];
+const types = ["Flat", "Terraced house", "Semi-detached house", "Detached house", "Commercial premises", "Something else"];
+const ages = ["Before 1950", "1950 to 1990", "1990 to 2015", "After 2015", "Not sure"];
+---
+<Layout title="Get a quote" description="An interactive demonstration of a quote journey for an electrician." sheet="30">
+  <section class="q">
+    <span data-line-node="left" style="position:absolute;top:0"></span>
+    <div class="wrap q__grid">
+      <div class="q__intro">
+        <h1 class="title" data-q-heading tabindex="-1">Tell us about the job.</h1>
+        <p class="lede" data-q-lede>Four short steps, about two minutes.</p>
+        <p class="q__demo"><strong>Demonstration form.</strong> Nothing you enter is sent or saved.</p>
+        <aside class="q__call">
+          <p>Rather talk it through?</p>
+          <button type="button" class="link q__tel" data-demo-contact="phone">{brand.phone}</button>
+          <button type="button" class="link q__tel" data-demo-contact="email">{brand.email}</button>
+        </aside>
+      </div>
+
+      <div class="q__panel">
+        <ol class="q__steps" data-q-steps aria-label="Progress">
+          {steps.map((s, i) => <li data-q-step={i} aria-current={i === 0 ? "step" : undefined}><span class="q__dot" aria-hidden="true"></span><span>{s}</span></li>)}
+        </ol>
+
+        <form data-quote novalidate>
+          <div class="q__errors" data-q-errors tabindex="-1" role="alert" hidden></div>
+
+          <fieldset class="q__page" data-page="0">
+            <legend class="subtitle">What do you need?</legend>
+            <p class="q__chosen" data-q-chosen hidden></p>
+            <div class="choices" data-field="service">
+              {services.map((s) => (
+                <label class="choice"><input type="radio" name="service" value={s.slug} required /><span class="choice__t"><strong>{s.title}</strong><small>{s.covers}</small></span></label>
+              ))}
+              <label class="choice"><input type="radio" name="service" value="other" required /><span class="choice__t"><strong>Something else</strong><small>Tell us about it in the next steps.</small></span></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="q__page" data-page="1" hidden>
+            <legend class="subtitle">Tell us about the property</legend>
+            <div class="fields">
+              <div class="field" data-field="property">
+                <label for="q-property">Property type</label>
+                <select id="q-property" name="property" required>
+                  <option value="">Choose one</option>
+                  {types.map((t) => <option>{t}</option>)}
+                </select>
+              </div>
+              <div class="field" data-field="age">
+                <label for="q-age">Roughly when was it built?</label>
+                <select id="q-age" name="age" required>
+                  <option value="">Choose one</option>
+                  {ages.map((t) => <option>{t}</option>)}
+                </select>
+              </div>
+              <div class="field" data-field="postcode">
+                <label for="q-postcode">Postcode</label>
+                <input id="q-postcode" name="postcode" autocomplete="postal-code" required inputmode="text" autocapitalize="characters" />
+                <p class="hint">We only use this to check we cover your area.</p>
+              </div>
+              <div class="field" data-field="timing">
+                <label for="q-timing">When would you like it done?</label>
+                <select id="q-timing" name="timing" required>
+                  <option value="">Choose one</option>
+                  {timing.map((t) => <option>{t}</option>)}
+                </select>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="q__page" data-page="2" hidden>
+            <legend class="subtitle">A little more detail</legend>
+            {services.map((s) => (
+              <div class="fields" data-scope={s.slug} hidden>
+                {s.scope.map((q) => (
+                  <div class="field field--wide" data-field={q.name} role="radiogroup" aria-labelledby={`${s.slug}-${q.name}`}>
+                    <p class="label" id={`${s.slug}-${q.name}`}>{q.label}</p>
+                    <div class="pills">
+                      {q.options.map((o) => <label class="pill"><input type="radio" name={`${s.slug}:${q.name}`} value={o} /><span>{o}</span></label>)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
+            <div class="field field--wide" data-field="details">
+              <label for="q-details">Anything else we should know?</label>
+              <textarea id="q-details" name="details" rows="4" maxlength="800"></textarea>
+              <p class="hint">Optional. Drawings, deadlines, access, or a fault you've noticed.</p>
+            </div>
+          </fieldset>
+
+          <fieldset class="q__page" data-page="3" hidden>
+            <legend class="subtitle">How can we reach you?</legend>
+            <div class="fields">
+              <div class="field" data-field="name">
+                <label for="q-name">Full name</label>
+                <input id="q-name" name="name" autocomplete="name" required />
+              </div>
+              <div class="field" data-field="email">
+                <label for="q-email">Email</label>
+                <input id="q-email" name="email" type="email" autocomplete="email" required />
+              </div>
+              <div class="field" data-field="phone">
+                <label for="q-phone">Phone</label>
+                <input id="q-phone" name="phone" type="tel" autocomplete="tel" required />
+              </div>
+              <div class="field" data-field="contact" role="radiogroup" aria-labelledby="q-contact-l">
+                <p class="label" id="q-contact-l">Best way to reply</p>
+                <div class="pills">
+                  <label class="pill"><input type="radio" name="contact" value="Phone" checked /><span>Phone</span></label>
+                  <label class="pill"><input type="radio" name="contact" value="Email" /><span>Email</span></label>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+
+          <div class="q__nav">
+            <button type="button" class="btn btn--ghost" data-q-back hidden>Back</button>
+            <button type="button" class="btn" data-q-next><span class="btn__cores" aria-hidden="true"><i></i><i></i><i></i></span><span data-q-next-label>Continue</span></button>
+          </div>
+        </form>
+
+        <section class="done" data-q-done hidden tabindex="-1" aria-labelledby="done-title">
+          <p class="done__tag">Demonstration only. Nothing was sent.</p>
+          <h2 id="done-title" class="title">That's the journey complete.</h2>
+          <p class="lede">On a live site, <span data-q-name>the customer</span> would now see this confirmation, and the electrician would get the enquiry straight away.</p>
+          <dl class="done__sum" data-q-summary></dl>
+          <h3 class="subtitle">What would happen next</h3>
+          <ol class="done__next">
+            {process.slice(1).map((p) => <li><strong>{p.title}</strong> {p.body}</li>)}
+          </ol>
+          <div class="q__nav">
+            <button type="button" class="btn btn--ghost" data-q-restart>Start again</button>
+            <a class="btn" href={stapled.enquiryUrl}><span class="btn__cores" aria-hidden="true"><i></i><i></i><i></i></span>Talk to Stapled. about yours</a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+  <section class="band dusk" style="padding-block:clamp(2.5rem,5vw,4rem)">
+    <div class="wrap">
+      <span data-line-node="end" style="position:absolute;left:0;top:0"></span>
+      <p class="subtitle">Want to know how the work runs first?</p>
+      <p style="margin-top:.6rem"><a class="link" href={asset("/how-it-works/")}>See how it works</a></p>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .q { position: relative; padding-top: calc(var(--header-h) + clamp(1.5rem, 5vw, 4.5rem)); padding-bottom: var(--section); }
+  .q__grid { display: grid; grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr); gap: clamp(2rem, 6vw, 6rem); align-items: start; }
+  .q__intro { position: sticky; top: calc(var(--header-h) + 1.5rem); display: grid; gap: 0.9rem; }
+  .q__intro h1:focus { outline: none; }
+  .q__demo { padding: 0.6rem 0.8rem; background: var(--plate); border-left: 3px solid var(--live); }
+  .q__call { display: grid; justify-items: start; gap: 0.1rem; margin-top: 0.6rem; }
+  .q__tel { min-height: 2.25rem; padding: 0; background: none; border: 0; cursor: pointer; }
+  .q__panel { background: var(--plate); padding: clamp(1.1rem, 3vw, 2.5rem); border-radius: 4px; min-width: 0; }
+  .q__steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.3rem; margin-bottom: clamp(1.5rem, 3vw, 2.25rem); }
+  .q__steps li { display: grid; gap: 0.35rem; font-size: 0.9375rem; font-variation-settings: "wdth" 84; color: var(--ink-soft); }
+  .q__dot { height: 3px; background: color-mix(in srgb, var(--ink) 18%, transparent); position: relative; overflow: hidden; }
+  .q__dot::after { content: ""; position: absolute; inset: 0; background: var(--live); transform: scaleX(0); transform-origin: left; transition: transform 380ms var(--ease); }
+  .q__steps li[data-done] .q__dot::after, .q__steps li[aria-current] .q__dot::after { transform: none; }
+  .q__steps li[aria-current] { color: var(--ink); font-weight: 620; }
+  @media (max-width: 480px) { .q__steps li:not([aria-current]) span:last-child { visibility: hidden; } .q__steps li[aria-current] { white-space: nowrap; } }
+
+  .q__page { border: 0; margin: 0; padding: 0; min-width: 0; }
+  .q__page legend { padding: 0; margin-bottom: 1.1rem; }
+  .q__chosen { margin: -0.5rem 0 1rem; padding: 0.5rem 0.75rem; background: #fff; border-left: 3px solid var(--neutral); }
+  .q__chosen[hidden] { display: none; }
+  .q__page[hidden] { display: none; }
+  .q__page.is-entering { animation: page-in 320ms var(--ease) both; }
+  @keyframes page-in { from { opacity: 0; transform: translateX(14px); } }
+
+  .choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.45rem; }
+  .choice { position: relative; display: block; cursor: pointer; }
+  .choice input { position: absolute; opacity: 0; inset: 0.8rem auto auto 0.8rem; }
+  .choice__t {
+    display: grid; gap: 0.15rem; height: 100%;
+    padding: 0.75rem 0.85rem;
+    border-radius: 3px;
+    box-shadow: inset 0 0 0 1px var(--rule);
+    background: #fff;
+    transition: box-shadow 120ms;
+  }
+  .choice__t strong { font-weight: 620; font-variation-settings: "wdth" 104; line-height: 1.2; }
+  .choice__t small { font-size: 0.9375rem; line-height: 1.3; color: var(--ink-soft); font-variation-settings: "wdth" 92; }
+  .choice:hover .choice__t { box-shadow: inset 0 0 0 1px var(--ink); }
+  .choice input:checked + .choice__t { box-shadow: inset 0 0 0 2px var(--ink); background: #fff; }
+  .choice input:focus-visible + .choice__t { outline: 3px solid var(--neutral); outline-offset: 2px; }
+
+  .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.1rem; margin-bottom: 1.1rem; }
+  .fields[hidden] { display: none; }
+  .field { display: grid; gap: 0.3rem; align-content: start; min-width: 0; }
+  .field--wide { grid-column: 1 / -1; }
+  .field label, .label { font-weight: 600; }
+  .field input:not([type="radio"]), .field select, .field textarea {
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid #5d6672;
+    border-radius: 3px;
+    background: #fff;
+    font-size: 1.0625rem;
+  }
+  .field textarea { resize: vertical; }
+  .hint { font-size: 0.9375rem; color: var(--ink-soft); }
+  .field.has-error input:not([type="radio"]), .field.has-error select { border: 2px solid #a3271b; }
+  :global(.err) { color: #a3271b; font-weight: 600; font-size: 0.9375rem; }
+  .pills { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .pill { position: relative; cursor: pointer; }
+  .pill input { position: absolute; opacity: 0; }
+  .pill span { display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0.4rem 0.9rem; border-radius: 3px; background: #fff; box-shadow: inset 0 0 0 1px var(--rule); }
+  .pill:hover span { box-shadow: inset 0 0 0 1px var(--ink); }
+  .pill input:checked + span { background: var(--ink); color: var(--plate); box-shadow: none; }
+  .pill input:focus-visible + span { outline: 3px solid var(--neutral); outline-offset: 2px; }
+
+  .q__errors { padding: 0.8rem 1rem; margin-bottom: 1.1rem; border-left: 3px solid #a3271b; background: #fff; }
+  .q__errors[hidden] { display: none; }
+  .q__errors:focus { outline: none; }
+  .q__errors :global(ul) { margin-top: 0.25rem; }
+  .q__errors :global(li) { padding-block: 0.1rem; }
+  .q__errors :global(a) { color: #a3271b; font-weight: 600; text-underline-offset: 0.15em; }
+  .q__nav { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: space-between; margin-top: 1.5rem; }
+  .q__nav .btn:only-of-type, [data-q-next] { margin-left: auto; }
+  .q__nav .btn[hidden] { display: none; }
+
+  .done { display: grid; gap: 0.9rem; }
+  .done[hidden] { display: none; }
+  .done:focus { outline: none; }
+  .done__tag { justify-self: start; padding: 0.2rem 0.6rem; border-radius: 2px; background: #c8f560; color: #1a2405; font-weight: 620; }
+  .done__sum { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 1.5rem; margin: 0.5rem 0; }
+  .done__sum :global(div) { padding-block: 0.5rem; border-top: 1px solid var(--rule); min-width: 0; overflow-wrap: anywhere; }
+  .done__sum :global(dt) { font-size: 0.9375rem; color: var(--ink-soft); }
+  .done__sum :global(dd) { margin: 0; font-weight: 560; }
+  .done__next { display: grid; gap: 0.1rem; counter-reset: n; }
+  .done__next li { counter-increment: n; padding-block: 0.5rem 0.5rem; padding-left: 1.9rem; position: relative; border-top: 1px solid var(--rule); }
+  .done__next li::before { content: counter(n); position: absolute; left: 0; font-weight: 620; color: var(--ink-soft); }
+  .done__next strong { display: block; }
+  @media (max-width: 960px) { .q__grid { grid-template-columns: 1fr; } .q__intro { position: static; } .q__call { display: none; } }
+  @media (max-width: 620px) { .choices, .fields, .done__sum { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+  import { services } from "../data/services";
+
+  const form = document.querySelector<HTMLFormElement>("[data-quote]")!;
+  const pages = [...form.querySelectorAll<HTMLFieldSetElement>("[data-page]")];
+  const stepsEl = [...document.querySelectorAll<HTMLElement>("[data-q-step]")];
+  const back = form.querySelector<HTMLButtonElement>("[data-q-back]")!;
+  const next = form.querySelector<HTMLButtonElement>("[data-q-next]")!;
+  const nextLabel = form.querySelector<HTMLElement>("[data-q-next-label]")!;
+  const errors = form.querySelector<HTMLElement>("[data-q-errors]")!;
+  const done = document.querySelector<HTMLElement>("[data-q-done]")!;
+  const heading = document.querySelector<HTMLElement>("[data-q-heading]")!;
+  const lede = document.querySelector<HTMLElement>("[data-q-lede]")!;
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let page = 0;
+
+  const value = (name: string) => (new FormData(form).get(name) as string | null)?.trim() ?? "";
+
+  const postcode = /^(GIR ?0AA|[A-PR-UWYZ][A-HK-Y]?\d[A-Z\d]? ?\d[ABD-HJLNP-UW-Z]{2})$/i;
+  const phone = /^(\+?44\s?|0)[\d\s()-]{9,14}$/;
+  const email = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+  type Rule = { field: string; label: string; test: () => string | null };
+  const rules: Rule[][] = [
+    [{ field: "service", label: "Service", test: () => (value("service") ? null : "Choose the service closest to what you need") }],
+    [
+      { field: "property", label: "Property type", test: () => (value("property") ? null : "Choose a property type") },
+      { field: "age", label: "Age", test: () => (value("age") ? null : "Choose roughly when it was built, or Not sure") },
+      {
+        field: "postcode", label: "Postcode",
+        test: () => {
+          const v = value("postcode");
+          if (!v) return "Enter a postcode";
+          return postcode.test(v) ? null : "Enter a full UK postcode, such as SO14 0AA";
+        },
+      },
+      { field: "timing", label: "Timing", test: () => (value("timing") ? null : "Choose when you'd like it done") },
+    ],
+    [],
+    [
+      { field: "name", label: "Name", test: () => (value("name").length > 1 ? null : "Enter your name") },
+      {
+        field: "email", label: "Email",
+        test: () => {
+          const v = value("email");
+          if (!v) return "Enter an email address";
+          return email.test(v) ? null : "Enter an email address like name@example.com";
+        },
+      },
+      {
+        field: "phone", label: "Phone",
+        test: () => {
+          const v = value("phone");
+          if (!v) return "Enter a phone number";
+          return phone.test(v) ? null : "Enter a UK phone number, such as 01632 960417";
+        },
+      },
+    ],
+  ];
+
+  function clearErrors() {
+    form.querySelectorAll(".err").forEach((e) => e.remove());
+    form.querySelectorAll(".has-error").forEach((e) => e.classList.remove("has-error"));
+    form.querySelectorAll("[aria-invalid]").forEach((e) => { e.removeAttribute("aria-invalid"); e.removeAttribute("aria-describedby"); });
+    errors.hidden = true;
+    errors.textContent = "";
+  }
+
+  function showField(field: string, message: string) {
+    const wrap = form.querySelector<HTMLElement>(`[data-field="${field}"]`)!;
+    wrap.classList.add("has-error");
+    const p = document.createElement("p");
+    p.className = "err";
+    p.id = `err-${field}`;
+    p.textContent = message;
+    const control = wrap.querySelector<HTMLInputElement>("input:not([type=radio]), select, textarea");
+    if (control) {
+      control.setAttribute("aria-invalid", "true");
+      control.setAttribute("aria-describedby", p.id);
+      control.insertAdjacentElement("afterend", p);
+    } else wrap.prepend(p);
+  }
+
+  function validate() {
+    clearErrors();
+    const failed = rules[page].map((r) => ({ r, m: r.test() })).filter((x) => x.m);
+    if (!failed.length) return true;
+    failed.forEach(({ r, m }) => showField(r.field, m!));
+    if (failed.length === 1) {
+      const c = form.querySelector<HTMLElement>(`[data-field="${failed[0].r.field}"] input, [data-field="${failed[0].r.field}"] select`);
+      c?.focus();
+      return false;
+    }
+    const list = document.createElement("ul");
+    const intro = document.createElement("p");
+    intro.textContent = `There are ${failed.length} things to fix:`;
+    failed.forEach(({ r, m }) => {
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.href = `#err-${r.field}`;
+      a.textContent = m!;
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        form.querySelector<HTMLElement>(`[data-field="${r.field}"] input, [data-field="${r.field}"] select`)?.focus();
+      });
+      li.append(a);
+      list.append(li);
+    });
+    errors.append(intro, list);
+    errors.hidden = false;
+    errors.focus();
+    return false;
+  }
+
+  function show(n: number, focus = true) {
+    page = n;
+    pages.forEach((p, i) => {
+      p.hidden = i !== n;
+      p.classList.toggle("is-entering", i === n && !reduced);
+    });
+    stepsEl.forEach((s, i) => {
+      if (i === n) s.setAttribute("aria-current", "step"); else s.removeAttribute("aria-current");
+      s.toggleAttribute("data-done", i < n);
+    });
+    back.hidden = n === 0;
+    nextLabel.textContent = n === pages.length - 1 ? "Send demo enquiry" : "Continue";
+    if (n === 2) {
+      const slug = value("service");
+      form.querySelectorAll<HTMLElement>("[data-scope]").forEach((d) => (d.hidden = d.dataset.scope !== slug));
+    }
+    clearErrors();
+    if (focus) {
+      const legend = pages[n].querySelector("legend")!;
+      legend.setAttribute("tabindex", "-1");
+      legend.focus({ preventScroll: true });
+      document.querySelector(".q__panel")?.scrollIntoView({ block: "nearest" });
+    }
+  }
+
+  function finish() {
+    const slug = value("service");
+    const service = services.find((s) => s.slug === slug)?.title ?? "Something else";
+    const items: [string, string][] = [
+      ["Service", service],
+      ["Property", `${value("property")}, ${value("postcode").toUpperCase()}`],
+      ["Timing", value("timing")],
+      ["Reply by", value("contact")],
+    ];
+    const sum = document.querySelector<HTMLElement>("[data-q-summary]")!;
+    sum.replaceChildren(...items.map(([k, v]) => {
+      const d = document.createElement("div");
+      const dt = document.createElement("dt"); dt.textContent = k;
+      const dd = document.createElement("dd"); dd.textContent = v;
+      d.append(dt, dd);
+      return d;
+    }));
+    document.querySelector("[data-q-name]")!.textContent = value("name").split(" ")[0] || "the customer";
+    form.hidden = true;
+    document.querySelector<HTMLElement>("[data-q-steps]")!.hidden = true;
+    heading.textContent = `Thanks, ${value("name").split(" ")[0]}.`;
+    lede.hidden = true;
+    done.hidden = false;
+    done.focus({ preventScroll: true });
+    scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" });
+  }
+
+  next.addEventListener("click", () => {
+    if (!validate()) return;
+    if (page === pages.length - 1) finish();
+    else show(page + 1);
+  });
+  back.addEventListener("click", () => show(page - 1));
+  form.addEventListener("submit", (e) => { e.preventDefault(); next.click(); });
+  form.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && (e.target as HTMLElement).tagName === "INPUT") { e.preventDefault(); next.click(); }
+  });
+  form.querySelectorAll('input[name="service"]').forEach((r) => r.addEventListener("change", clearErrors));
+
+  document.querySelector("[data-q-restart]")?.addEventListener("click", () => {
+    form.reset();
+    form.hidden = false;
+    done.hidden = true;
+    document.querySelector<HTMLElement>("[data-q-steps]")!.hidden = false;
+    heading.textContent = "Tell us about the job.";
+    lede.hidden = false;
+    show(0);
+  });
+
+  const preset = new URLSearchParams(location.search).get("service");
+  if (preset) {
+    const input = form.querySelector<HTMLInputElement>(`input[name="service"][value="${CSS.escape(preset)}"]`);
+    if (input) {
+      input.checked = true;
+      const note = document.querySelector<HTMLElement>("[data-q-chosen]")!;
+      note.textContent = `${services.find((s) => s.slug === preset)?.title} is selected. Choose another if you need to.`;
+      note.hidden = false;
+    }
+  }
+  show(0, false);
+</script>

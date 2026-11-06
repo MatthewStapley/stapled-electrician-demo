@@ -1,0 +1,256 @@
+---
+// Opening scene. The poster is the fully lit room, so the page is complete
+// before any script runs. room.ts then takes over with the live layers.
+import { asset, brand } from "../data/site";
+const switches = [
+  { id: "pendants", label: "Pendants" },
+  { id: "downlights", label: "Downlights" },
+  { id: "joinery", label: "Joinery" },
+];
+---
+<script is:inline>
+  // First visit only: hold the lit poster back so the room opens dark. The timer
+  // restores it if the live room is slow or never arrives.
+  try {
+    if (!sessionStorage.getItem("lw-opened") && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      var html = document.documentElement;
+      html.classList.add("room-opening");
+      setTimeout(function () { html.classList.remove("room-opening"); }, 3500);
+    }
+  } catch (e) {}
+</script>
+<section class="scene on-dusk" data-hero-scene aria-labelledby="hero-title">
+  <div class="scene__stick">
+    <div class="room" data-room>
+      <picture>
+        <source media="(max-aspect-ratio: 1/1)" srcset={asset("/renders/kitchen-tall-lit.webp")} width="864" height="1400" />
+        <img class="room__layer room__poster" src={asset("/renders/kitchen-wide-lit.webp")} alt="A visualised kitchen extension at dusk: dark joinery, a stone island under three opal globes, and a lit shelf alcove beside a glazed screen." width="1600" height="1000" fetchpriority="high" />
+      </picture>
+      <canvas class="room__layer room__gl" data-room-gl aria-hidden="true"></canvas>
+      <canvas class="room__layer room__ink" data-room-ink aria-hidden="true"></canvas>
+      <div class="room__shade" aria-hidden="true"></div>
+    </div>
+
+    <div class="scene__copy">
+      <h1 id="hero-title" class="display">{brand.strapline}</h1>
+      <p class="lede">Rewires, renovations and larger projects across {brand.area}. Drawn before they're wired, tested before they're signed off.</p>
+      <div class="scene__cta">
+        <a class="btn" href={asset("/quote/")}><span class="btn__cores" aria-hidden="true"><i></i><i></i><i></i></span>Start your quote</a>
+        <a class="btn btn--ghost" href={asset("/services/")}>See services</a>
+      </div>
+    </div>
+
+    <div class="plate" data-circuits role="group" aria-label="Lighting circuits in this room">
+      <p class="plate__title">Try the circuits</p>
+      <button type="button" class="plate__all" data-circuit-master disabled>All off</button>
+      <div class="plate__rockers">
+        {switches.map((s) => (
+          <button type="button" class="rocker" role="switch" aria-checked="true" data-circuit={s.id} disabled>
+            <span class="rocker__face" aria-hidden="true"><i></i></span>
+            <span class="rocker__label">{s.label}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <p class="scene__note">Illustrative visualisation, rendered circuit by circuit</p>
+
+    <div class="scene__xray">
+      <p class="title">The best electrical work disappears behind the plaster.</p>
+    </div>
+  </div>
+  <span class="scene__end" data-hero-end data-line-node="left"></span>
+</section>
+
+<style>
+  /* Sits under the demo bar, so its bottom edge lands on the fold at first paint. */
+  .scene { position: relative; z-index: 2; height: 190svh; margin-top: calc(var(--bar-h) * -1); background: var(--dusk); --xray: 0; }
+  .scene__stick {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    min-height: 34rem;
+    overflow: hidden;
+    color: var(--on-dusk);
+  }
+  .scene__end { position: absolute; bottom: 0; left: 0; }
+  .room { position: absolute; inset: 0; background: var(--dusk); }
+  .room__layer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 62% 50%; }
+:global(html.room-opening) .room__poster { visibility: hidden; }
+  .room__gl, .room__ink { opacity: 0; transition: opacity 400ms ease; }
+  .room.is-ready .room__gl, .room.is-ready .room__ink { opacity: 1; }
+  .room__shade {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(90deg, rgb(20 28 41 / 0.88) 0%, rgb(20 28 41 / 0.66) 30%, rgb(20 28 41 / 0.44) 48%, rgb(20 28 41 / 0) 66%),
+      linear-gradient(0deg, rgb(20 28 41 / 0.55) 0%, rgb(20 28 41 / 0) 26%),
+      linear-gradient(180deg, rgb(20 28 41 / 0.72) 0%, rgb(20 28 41 / 0.5) 12%, rgb(20 28 41 / 0) 24%);
+  }
+
+  .scene__copy {
+    position: absolute;
+    left: var(--gutter);
+    bottom: clamp(5.25rem, 13vh, 8rem);
+    width: min(50rem, 62vw);
+    display: grid;
+    gap: clamp(1rem, 2.4vh, 1.6rem);
+    opacity: calc(1 - var(--xray) * 2.4);
+    transform: translateY(calc(var(--xray) * -3rem));
+  }
+  .scene__copy .lede { max-width: 31em; }
+  .scene__copy h1 { text-shadow: 0 0 2px rgb(20 28 41 / 0.55), 0 2px 28px rgb(20 28 41 / 0.8); }
+  .scene__cta { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+
+  /* A real two-gang-and-a-bit grid plate: square-edged, screwed, steel */
+  .plate {
+    position: absolute;
+    right: var(--gutter);
+    bottom: clamp(1.4rem, 5vh, 3rem);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.35rem 1rem;
+    align-items: center;
+    padding: 0.7rem 0.9rem 0.8rem;
+    border-radius: 4px;
+    background: linear-gradient(135deg, #e9eae6, #cfd2ce);
+    color: var(--ink);
+    box-shadow: 0 1px 0 #fff8 inset, 0 16px 34px -16px #000c;
+    opacity: calc(1 - var(--xray) * 2.4);
+  }
+  .plate[hidden] { display: none; }
+  .plate__title { font-size: 0.9375rem; font-weight: 600; font-variation-settings: "wdth" 86; }
+  .plate__all {
+    justify-self: end;
+    min-height: 2.75rem;
+    min-width: 3.75rem;
+    margin-block: -0.6rem;
+    border: 0;
+    background: none;
+    color: inherit;
+    font-size: 0.9375rem;
+    font-variation-settings: "wdth" 86;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    cursor: pointer;
+  }
+  .plate__rockers { grid-column: 1 / -1; display: flex; gap: 0.4rem; }
+  .rocker {
+    display: grid;
+    justify-items: center;
+    gap: 0.3rem;
+    min-width: 5.1rem;
+    padding: 0.2rem 0.1rem;
+    border: 0;
+    background: none;
+    color: inherit;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 560;
+    font-variation-settings: "wdth" 84;
+  }
+  .rocker:disabled { cursor: progress; }
+  .rocker__face {
+    position: relative;
+    width: 3.1rem;
+    height: 3.6rem;
+    border-radius: 3px;
+    background: #bfc3bf;
+    box-shadow: inset 0 0 0 1px #0002, inset 0 2px 4px #0003;
+    perspective: 120px;
+  }
+  .rocker__face i {
+    position: absolute;
+    inset: 3px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, #fcfcfa, #dfe1dd);
+    box-shadow: 0 1px 2px #0005;
+    transform: rotateX(-10deg);
+    transition: transform 130ms cubic-bezier(0.4, 0, 0.1, 1.4), background 130ms;
+  }
+  .rocker[aria-checked="true"] .rocker__face i {
+    transform: rotateX(10deg);
+    background: linear-gradient(180deg, #dfe1dd, #fcfcfa);
+  }
+  .rocker__face::after {
+    content: "";
+    position: absolute;
+    top: 0.35rem; right: 0.35rem;
+    width: 0.4rem; height: 0.4rem;
+    border-radius: 50%;
+    background: #9aa09d;
+    transition: background-color 180ms, box-shadow 180ms;
+  }
+  .rocker[aria-checked="true"] .rocker__face::after { background: #e8a04a; box-shadow: 0 0 6px 1px #ffc27a; }
+
+  .scene__note {
+    position: absolute;
+    left: var(--gutter);
+    bottom: 1rem;
+    max-width: calc(100vw - 2 * var(--gutter));
+    font-size: 0.875rem;
+    font-variation-settings: "wdth" 86;
+    color: var(--on-dusk-soft);
+    opacity: calc(1 - var(--xray) * 2.4);
+  }
+
+  .scene__xray {
+    position: absolute;
+    left: var(--gutter);
+    bottom: clamp(3rem, 12vh, 7rem);
+    display: grid;
+    gap: 1rem;
+    width: min(52rem, calc(100vw - 2 * var(--gutter)));
+    opacity: calc((var(--xray) - 0.45) * 2.6);
+    transform: translateY(calc((1 - var(--xray)) * 2rem));
+    pointer-events: none;
+    --mark-l: var(--live-on-dusk); --mark-n: var(--neutral-on-dusk); --mark-e: var(--earth-on-dusk);
+  }
+
+  @media (max-aspect-ratio: 1/1) {
+    .room__layer { object-position: 50% 30%; }
+    .room__shade {
+      background:
+        linear-gradient(0deg, rgb(20 28 41 / 0.97) 0%, rgb(20 28 41 / 0.9) 34%, rgb(20 28 41 / 0) 62%),
+        linear-gradient(180deg, rgb(20 28 41 / 0.55) 0%, rgb(20 28 41 / 0) 18%);
+    }
+    .scene__copy { width: auto; right: var(--gutter); bottom: 6.6rem; }
+    .scene__cta .btn--ghost { display: none; }
+    .scene__note { bottom: 0.45rem; font-size: 0.8125rem; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .plate {
+      left: var(--gutter);
+      right: var(--gutter);
+      bottom: 2rem;
+      grid-template-columns: 1fr auto;
+      column-gap: 0.4rem;
+      padding: 0.3rem 0.5rem;
+    }
+    .plate__title { display: none; }
+    .plate__rockers { grid-column: 1; grid-row: 1; justify-content: space-between; }
+    .plate__all { grid-column: 2; grid-row: 1; margin: 0; min-width: 0; padding-inline: 0.3rem; }
+    .rocker { grid-template-columns: auto 1fr; align-items: center; min-width: 0; min-height: 2.75rem; gap: 0.3rem; font-size: 0.8125rem; }
+    .rocker__face { width: 1.6rem; height: 2rem; }
+    .rocker__face::after { display: none; }
+  }
+  @media (max-aspect-ratio: 1/1) and (max-width: 374px) {
+    .plate__all { display: none; }
+    .plate__rockers { gap: 0.15rem; }
+    .rocker { gap: 0.2rem; }
+    .rocker__face { width: 1.05rem; }
+  }
+  @media (max-aspect-ratio: 1/1) and (max-height: 720px) {
+    .scene__copy .lede { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .scene { height: auto; }
+    .scene__stick { position: relative; }
+    .scene__xray { display: none; }
+  }
+  @media (max-height: 620px) and (min-aspect-ratio: 1/1) {
+    .scene__copy .lede { display: none; }
+    .display { font-size: 2.6rem; }
+  }
+</style>
+
+<script>
+  import "../scripts/room";
+</script>

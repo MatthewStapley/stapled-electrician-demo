@@ -1,0 +1,15 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageHead from "../components/PageHead.astro";
+import Steps from "../components/Steps.astro";
+import BehindPlaster from "../components/BehindPlaster.astro";
+import Paperwork from "../components/Paperwork.astro";
+import Enquire from "../components/Enquire.astro";
+---
+<Layout title="How it works" description="What happens after you enquire, how the work runs on site and what you receive at the end." sheet="20">
+  <PageHead title="From first message to final certificate." lede="No surprises is mostly a matter of telling people what's about to happen. This is what happens with us." />
+  <section class="band band--plate"><div class="wrap"><Steps heading="After you enquire" /></div></section>
+  <BehindPlaster />
+  <section class="band"><span data-line-node="left" style="position:absolute;top:0"></span><div class="wrap"><Paperwork /></div></section>
+  <Enquire />
+</Layout>

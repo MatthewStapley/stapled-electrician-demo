@@ -1,0 +1,28 @@
+---
+import Photo from "./Photo.astro";
+import { asset } from "../data/site";
+import type { Project } from "../data/projects";
+const { project, ratio = "3 / 2", sizes } = Astro.props as { project: Project; ratio?: string; sizes?: string };
+---
+<a class="pc" href={asset(`/projects/${project.slug}/`)}>
+  <Photo image={project.image} ratio={ratio} sizes={sizes} label="Illustrative project" />
+  <div class="pc__text">
+    <p class="tag">{project.kind}</p>
+    <h3 class="subtitle"><span class="pc__title">{project.title}</span></h3>
+    <p>{project.summary}</p>
+  </div>
+</a>
+<style>
+  .pc { display: grid; gap: 0.9rem; text-decoration: none; color: inherit; }
+  .pc__text { display: grid; gap: 0.3rem; }
+  .pc__title {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-size: 0 1px;
+    background-position: 0 100%;
+    transition: background-size 320ms var(--ease);
+  }
+  .pc:hover .pc__title, .pc:focus-visible .pc__title { background-size: 100% 1px; }
+  .pc :global(img) { transition: transform 900ms var(--ease), filter 1100ms cubic-bezier(0.3, 0, 0.2, 1); }
+  @media (hover: hover) { .pc:hover :global(img) { transform: scale(1.025); } }
+</style>

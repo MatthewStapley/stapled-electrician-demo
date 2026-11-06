@@ -1,0 +1,69 @@
+---
+import "@fontsource-variable/archivo/wdth.css";
+import "../styles/global.css";
+import DemoBar from "../components/DemoBar.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import DemoContact from "../components/DemoContact.astro";
+import { asset, brand } from "../data/site";
+
+interface Props {
+  title: string;
+  description: string;
+  /** Drawing number shown in the title block */
+  sheet: string;
+  /** "dusk" makes the header sit over a dark opening */
+  header?: "dusk" | "sheath";
+  preload?: { href: string; media?: string }[];
+}
+const { title, description, sheet, header = "sheath", preload = [] } = Astro.props;
+---
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} | {brand.fullName} concept by Stapled.</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#141c29" />
+    <link rel="icon" href={asset("/favicon.svg")} type="image/svg+xml" />
+    {preload.map((p) => <link rel="preload" as="image" href={p.href} media={p.media} />)}
+    <script is:inline>
+      document.documentElement.classList.add("js");
+      // A page transition interrupted by a quick navigation isn't an error.
+      ["pageswap", "pagereveal"].forEach(function (type) {
+        addEventListener(type, function (e) {
+          var t = e.viewTransition;
+          if (t) { t.ready.catch(function () {}); t.finished.catch(function () {}); t.updateCallbackDone && t.updateCallbackDone.catch(function () {}); }
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <DemoBar />
+    <Header tone={header} />
+    <main id="main">
+      <canvas class="live-line" data-live-line aria-hidden="true"></canvas>
+      <slot />
+    </main>
+    <Footer sheet={sheet} title={title} />
+    <DemoContact />
+    <script>
+      import "../scripts/live-line";
+      import "../scripts/chrome";
+    </script>
+  </body>
+</html>
+
+<style>
+  .live-line {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+  }
+</style>

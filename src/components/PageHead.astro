@@ -1,0 +1,20 @@
+---
+// Standard page opening for inner pages.
+const { title, lede, tag } = Astro.props;
+---
+<section class="ph-head" >
+  <span data-line-node="left" class="ph-node"></span>
+  <div class="wrap">
+    {tag && <p class="tag ph-head__tag">{tag}</p>}
+    <h1 class="display">{title}</h1>
+    {lede && <p class="lede ph-head__lede">{lede}</p>}
+    <slot />
+  </div>
+</section>
+<style>
+  .ph-head { position: relative; padding-top: calc(var(--header-h) + clamp(2.5rem, 7vw, 6rem)); padding-bottom: clamp(2.5rem, 5vw, 4.5rem); }
+  .ph-node { position: absolute; top: 0; }
+  .ph-head__tag { margin-bottom: 0.7rem; }
+  .ph-head .display { font-size: clamp(2.4rem, 6vw, 5.75rem); max-width: 15em; }
+  .ph-head__lede { margin-top: 1.25rem; }
+</style>

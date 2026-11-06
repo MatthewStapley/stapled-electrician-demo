@@ -1,0 +1,38 @@
+---
+import { process } from "../data/process";
+const { heading = "What happens after you enquire", } = Astro.props;
+---
+<div class="steps">
+  <h2 class="title">{heading}</h2>
+  <ol class="steps__list">
+    {process.map((s, i) => (
+      <li class="step">
+        <span class="step__n" aria-hidden="true">{i + 1}</span>
+        <h3 class="subtitle">{s.title}</h3>
+        <p>{s.body}</p>
+      </li>
+    ))}
+  </ol>
+</div>
+<style>
+  .steps { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: clamp(2rem, 6vw, 6rem); }
+  .steps .title { position: sticky; top: calc(var(--header-h) + 1.5rem); align-self: start; }
+  .step {
+    display: grid;
+    grid-template-columns: 3.25rem minmax(0, 1fr);
+    gap: 0.25rem 0.75rem;
+    padding-block: clamp(1.1rem, 2vw, 1.6rem);
+    border-top: 1px solid var(--rule);
+  }
+  .step__n {
+    grid-row: span 2;
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    font-weight: 500;
+    font-variation-settings: "wdth" 118;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--ink-soft);
+  }
+  .step p { max-width: 34em; }
+  @media (max-width: 860px) { .steps { grid-template-columns: 1fr; } .steps .title { position: static; } }
+</style>

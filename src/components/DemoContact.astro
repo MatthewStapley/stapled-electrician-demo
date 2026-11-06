@@ -1,0 +1,35 @@
+---
+// Phone and email actions open this instead of dialling or composing, because
+// the contact details are reserved examples.
+import { brand, stapled } from "../data/site";
+---
+<dialog class="contact" data-contact-dialog aria-labelledby="contact-title">
+  <form method="dialog" class="contact__box">
+    <h2 id="contact-title" class="subtitle" data-contact-title>This number is an example</h2>
+    <p data-contact-body>
+      {brand.phone} comes from a range Ofcom keeps aside for fiction, so it can't reach anyone.
+    </p>
+    <p>On a client's live site, this opens their phone or email app straight away.</p>
+    <div class="contact__actions">
+      <a class="btn" href={stapled.enquiryUrl}><span class="btn__cores" aria-hidden="true"><i></i><i></i><i></i></span>Talk to Stapled.</a>
+      <button class="btn btn--ghost" value="close">Close</button>
+    </div>
+  </form>
+</dialog>
+
+<style>
+  .contact {
+    width: min(30rem, calc(100vw - 2rem));
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    background: var(--plate);
+    color: var(--ink);
+    box-shadow: 0 30px 80px -20px #000a;
+  }
+  .contact::backdrop { background: color-mix(in srgb, var(--dusk) 70%, transparent); }
+  .contact[open] { animation: contact-in 240ms var(--ease) both; }
+  @keyframes contact-in { from { opacity: 0; transform: translateY(10px); } }
+  .contact__box { display: grid; gap: 0.8rem; padding: clamp(1.25rem, 4vw, 2rem); }
+  .contact__actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.6rem; }
+</style>

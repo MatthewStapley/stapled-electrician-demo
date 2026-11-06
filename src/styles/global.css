@@ -1,0 +1,242 @@
+/* Linework Electrical: tokens and shared type.
+   Colours come from the job. Sheath is the grey of twin and earth, dusk is the
+   room before the lights come on, and the three conductors are the only accents.
+   Warm lamp colour appears only where something is actually lit. */
+:root {
+  --dusk: #141c29;
+  --dusk-2: #1f2a3a;
+  --dusk-3: #33415a;
+  --sheath: #d5d8d3;
+  --sheath-2: #c6cac5;
+  --plate: #f2f3ef;
+  --skim: #d9b5a3;
+  --ink: #141c29;
+  --ink-soft: #414b58;
+  --on-dusk: #eef0ec;
+  --on-dusk-soft: #b3bcc8;
+
+  --live: #8a4a1c;
+  --neutral: #2a5f9f;
+  --earth: #2f8340;
+  --earth-y: #e2c62c;
+  --live-on-dusk: #c98448;
+  --neutral-on-dusk: #6c9bd2;
+  --earth-on-dusk: #6fb36f;
+  --lamp: #ffd2a0;
+
+  --rule: color-mix(in srgb, var(--ink) 24%, transparent);
+  --rule-dusk: color-mix(in srgb, var(--on-dusk) 22%, transparent);
+
+  --gutter: clamp(1.75rem, 6.2vw, 5.75rem);
+  --section: clamp(4.5rem, 10vw, 9rem);
+  --bar-h: 2.5rem;
+  --header-h: 4.25rem;
+  --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+  --font: "Archivo Variable", "Arial Narrow", Arial, sans-serif;
+
+  color-scheme: light;
+}
+
+@view-transition {
+  navigation: auto;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-h) + var(--bar-h) + 1rem);
+}
+
+body {
+  margin: 0;
+  background: var(--sheath);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  font-variation-settings: "wdth" 100;
+  font-feature-settings: "tnum" 1;
+  -webkit-font-smoothing: antialiased;
+  text-wrap: pretty;
+  overflow-x: clip;
+}
+
+img, svg, canvas { display: block; max-width: 100%; }
+img { height: auto; }
+a { color: inherit; }
+button, input, select, textarea { font: inherit; color: inherit; }
+h1, h2, h3, p, ul, ol, dl, dd, figure { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+main { position: relative; z-index: 0; display: flow-root; }
+
+:focus-visible {
+  outline: 3px solid var(--neutral);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+.on-dusk :focus-visible, .dusk :focus-visible { outline-color: var(--lamp); }
+
+.skip {
+  position: fixed;
+  left: 1rem;
+  top: -5rem;
+  z-index: 100;
+  padding: 0.75rem 1rem;
+  background: var(--plate);
+  color: var(--ink);
+}
+.skip:focus { top: 3.25rem; }
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  overflow: hidden; clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---- Type: one family, driven by its width axis ---------------------------- */
+.display {
+  font-size: clamp(2.6rem, 7.1vw, 6.9rem);
+  font-weight: 560;
+  font-stretch: 118%;
+  font-variation-settings: "wdth" 118;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+.title {
+  font-size: clamp(2rem, 4.5vw, 4.1rem);
+  font-weight: 560;
+  font-variation-settings: "wdth" 116;
+  line-height: 1.03;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.subtitle {
+  font-size: clamp(1.3rem, 2vw, 1.75rem);
+  font-weight: 540;
+  font-variation-settings: "wdth" 110;
+  line-height: 1.16;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.lede {
+  font-size: clamp(1.15rem, 1.5vw, 1.35rem);
+  line-height: 1.42;
+  max-width: 36em;
+}
+.tag {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  font-variation-settings: "wdth" 80;
+  letter-spacing: 0.005em;
+  color: var(--ink-soft);
+}
+.dusk .tag, .on-dusk .tag { color: var(--on-dusk-soft); }
+.measure { max-width: 34em; }
+
+/* ---- Structure ------------------------------------------------------------ */
+.wrap {
+  position: relative;
+  z-index: 2;
+  padding-inline: var(--gutter);
+  max-width: 1720px;
+  margin-inline: auto;
+}
+.band { position: relative; padding-block: var(--section); }
+.band--plate { background: var(--plate); }
+.dusk {
+  background: var(--dusk);
+  color: var(--on-dusk);
+  --rule: var(--rule-dusk);
+  --ink-soft: var(--on-dusk-soft);
+}
+
+/* ---- Buttons --------------------------------------------------------------- */
+.btn {
+  --btn-bg: var(--ink);
+  --btn-fg: var(--plate);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-height: 3.25rem;
+  padding: 0.7rem 1.35rem 0.7rem 1.1rem;
+  border: 0;
+  border-radius: 3px;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-weight: 620;
+  font-variation-settings: "wdth" 106;
+  line-height: 1.1;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 180ms ease, transform 140ms var(--ease);
+}
+.btn:active { transform: translateY(1px); }
+.btn__cores {
+  display: inline-grid;
+  gap: 2px;
+  width: 1.1rem;
+  flex: none;
+  transform-origin: left center;
+  transition: transform 240ms var(--ease);
+}
+.btn__cores i { height: 2px; border-radius: 1px; background: var(--live-on-dusk); }
+.btn__cores i:nth-child(2) { background: var(--neutral-on-dusk); }
+.btn__cores i:nth-child(3) { background: linear-gradient(90deg, var(--earth-y) 0 33%, var(--earth-on-dusk) 33% 66%, var(--earth-y) 66%); }
+@media (hover: hover) {
+  .btn:hover { --btn-bg: var(--dusk-3); }
+  .btn:hover .btn__cores { transform: scaleX(1.4); }
+}
+.dusk .btn, .on-dusk .btn, .btn--plate { --btn-bg: var(--plate); --btn-fg: var(--ink); }
+.dusk .btn .btn__cores i:nth-child(1), .on-dusk .btn .btn__cores i:nth-child(1), .btn--plate .btn__cores i:nth-child(1) { background: var(--live); }
+.dusk .btn .btn__cores i:nth-child(2), .on-dusk .btn .btn__cores i:nth-child(2), .btn--plate .btn__cores i:nth-child(2) { background: var(--neutral); }
+.dusk .btn .btn__cores i:nth-child(3), .on-dusk .btn .btn__cores i:nth-child(3), .btn--plate .btn__cores i:nth-child(3) { background: linear-gradient(90deg, var(--earth-y) 0 33%, var(--earth) 33% 66%, var(--earth-y) 66%); }
+@media (hover: hover) {
+  .dusk .btn:hover, .on-dusk .btn:hover, .btn--plate:hover { --btn-bg: #fff; }
+}
+.btn--ghost {
+  background: transparent;
+  color: inherit;
+  box-shadow: inset 0 0 0 1px currentColor;
+}
+@media (hover: hover) {
+  .btn--ghost:hover, .dusk .btn--ghost:hover, .on-dusk .btn--ghost:hover { background: color-mix(in srgb, currentColor 12%, transparent); }
+}
+
+.link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  transition: text-decoration-thickness 120ms ease;
+}
+@media (hover: hover) { .link:hover { text-decoration-thickness: 2px; } }
+
+/* ---- Energised imagery: a picture comes on when the line reaches it. ---------
+   Only images dim, never text, and only once JavaScript has armed the line. */
+.line-armed [data-energise]:not(.is-live) img {
+  filter: brightness(0.3) saturate(0.45);
+}
+[data-energise] img {
+  transition: filter 1100ms cubic-bezier(0.3, 0, 0.2, 1);
+}
+
+/* ---- Page transition: a wipe that follows the direction of the line --------- */
+::view-transition-group(root) { animation-duration: 520ms; }
+::view-transition-old(root) { animation: 300ms ease both vt-out; }
+::view-transition-new(root) { animation: 520ms var(--ease) both vt-in; }
+@keyframes vt-out { to { opacity: 0.4; } }
+@keyframes vt-in { from { clip-path: inset(0 0 0 100%); } to { clip-path: inset(0); } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}

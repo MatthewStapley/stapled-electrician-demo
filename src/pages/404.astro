@@ -1,0 +1,12 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageHead from "../components/PageHead.astro";
+import Enquire from "../components/Enquire.astro";
+import { asset } from "../data/site";
+---
+<Layout title="Page not found" description="This page isn't on the plan." sheet="404">
+  <PageHead title="This circuit isn't on the plan." lede="The page may have moved. The schedule of services is a good place to pick up again.">
+    <a class="btn" style="margin-top:1.5rem" href={asset("/services/")}><span class="btn__cores" aria-hidden="true"><i></i><i></i><i></i></span>See services</a>
+  </PageHead>
+  <Enquire />
+</Layout>

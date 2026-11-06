@@ -1,0 +1,69 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Hero from "../components/Hero.astro";
+import Schedule from "../components/Schedule.astro";
+import BehindPlaster from "../components/BehindPlaster.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import Steps from "../components/Steps.astro";
+import Paperwork from "../components/Paperwork.astro";
+import Enquire from "../components/Enquire.astro";
+import { asset } from "../data/site";
+import { projects } from "../data/projects";
+const [lead, second, third] = [projects[1], projects[0], projects[4]];
+---
+<Layout
+  title="Electricians for homes, renovations and larger projects"
+  description="Linework Electrical is a fictional electrician brand: a website concept by Stapled. for independent UK electricians."
+  sheet="01"
+  header="dusk"
+  preload={[
+    { href: asset("/renders/kitchen-wide-lit.webp"), media: "(min-aspect-ratio: 1/1)" },
+    { href: asset("/renders/kitchen-tall-lit.webp"), media: "(max-aspect-ratio: 1/1)" },
+  ]}
+>
+  <Hero />
+
+  <section class="band" aria-label="Services">
+    <div class="wrap">
+      <Schedule intro="Choose a service to see what's included and what you'll have at the end, then ask for a quote with it already selected." />
+    </div>
+  </section>
+
+  <BehindPlaster />
+
+  <section class="band dusk" aria-labelledby="work-title">
+    <span data-line-node="left" style="position:absolute;top:0"></span>
+    <div class="wrap">
+      <div class="work__head">
+        <h2 id="work-title" class="title">Judge it by the jobs.</h2>
+        <p class="measure">These projects are illustrative. They show how real case studies would read on your site: the brief, the difficult part, and what was done about it.</p>
+      </div>
+      <div class="work">
+        <div class="work__a"><ProjectCard project={lead} ratio="2 / 1" sizes="100vw" /></div>
+        <div><ProjectCard project={second} ratio="8 / 5" sizes="(max-width: 860px) 100vw, 50vw" /></div>
+        <div><ProjectCard project={third} ratio="8 / 5" sizes="(max-width: 860px) 100vw, 50vw" /></div>
+      </div>
+      <p class="work__all"><a class="link" href={asset("/projects/")}>See all five projects</a></p>
+    </div>
+  </section>
+
+  <section class="band"><div class="wrap"><Steps /></div></section>
+
+  <section class="band band--plate"><div class="wrap">
+    <Paperwork />
+    <p class="aside">The line you've followed down this page only runs straight and only turns square. Cables in walls are held to the same rule.</p>
+  </div></section>
+
+  <Enquire />
+</Layout>
+
+<style>
+  .work__head { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(1rem, 5vw, 5rem); align-items: end; margin-bottom: clamp(2rem, 5vw, 4rem); }
+  .work { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(2.5rem, 5vw, 4.5rem) clamp(1.5rem, 4vw, 4rem); }
+  .work__a { grid-column: 1 / -1; }
+  .work__all { margin-top: clamp(2rem, 4vw, 3rem); }
+  .aside { margin-top: clamp(2rem, 4vw, 3rem); color: var(--ink-soft); max-width: 40em; }
+  @media (max-width: 860px) {
+    .work__head, .work { grid-template-columns: 1fr; }
+  }
+</style>
