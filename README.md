@@ -27,14 +27,20 @@ npm run preview   # serves the build
 npm run check     # Astro and TypeScript checks
 ```
 
-To build for a GitHub Pages project site, set the sub-path at build time:
+## Publishing
+
+Live at <https://matthewstapley.github.io/stapled-electrician-demo/>. Every push
+to `main` runs `.github/workflows/deploy.yml`, which type-checks, builds with
+`SITE_BASE=/stapled-electrician-demo` and deploys to GitHub Pages.
+
+To reproduce that build locally:
 
 ```sh
-SITE_BASE=/StapledElectricianDemo npm run build
+SITE_BASE=/stapled-electrician-demo npm run build
 ```
 
 Internal links and public files go through `asset()` in `src/data/site.ts`, so
-they follow the base. Publishing is a separate step: nothing here deploys.
+they follow the base.
 
 ## Adapting it for a real client
 
